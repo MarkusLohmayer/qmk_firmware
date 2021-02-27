@@ -31,6 +31,10 @@ Create own keymap with `qmk new-keymap`.
 qmk compile
 ```
 
+```
+qmk compile -kb kyria -km default
+```
+
 
 ## Flash firmware
 
