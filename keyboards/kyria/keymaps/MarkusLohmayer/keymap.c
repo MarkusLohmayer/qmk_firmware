@@ -10,23 +10,31 @@
 #define _R_H     LT(_R, KC_H)
 #define SFT_J    RSFT_T(KC_J)
 #define CTL_K    RCTL_T(KC_K)
-#define ALT_L    RALT_T(KC_L)
+#define ALT_L    LALT_T(KC_L)
 #define GUI_SCLN RGUI_T(KC_SCLN)
 #define _L_QUOT  LT(_L, KC_QUOT)
+
+/* umlaute based on altgr-intl layout */
+#define UM_AE    RALT(KC_Q)
+#define UM_SS    RALT(KC_S)
+#define UM_UE    RALT(KC_Y)
+#define UM_OE    RALT(KC_P)
+#define EURO     RALT(KC_5)
 
 enum layers {
   _B = 0,
   _L,
   _R,
-  _0
+  _0,
+  _1
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_B] = LAYOUT(
   KC_GRV  , KC_Q    , KC_W    , KC_E    , KC_R    , KC_T    ,                                         KC_Y    , KC_U    , KC_I    , KC_O    , KC_P    , KC_MINS ,
   _L_TAB  , GUI_A   , ALT_S   , CTL_D   , SFT_F   , _R_G    ,                                         _R_H    , SFT_J   , CTL_K   , ALT_L   , GUI_SCLN, _L_QUOT ,
-  KC_NO   , KC_Z    , KC_X    , KC_C    , KC_V    , KC_B    , OSL(_0) , KC_LEFT , KC_RGHT , KC_NO   , KC_N    , KC_M    , KC_COMM , KC_DOT  , KC_SLSH , KC_BSLS ,
-                                KC_LEAD , TT(_R)  , KC_BSPC , KC_ESC  , KC_DOWN , KC_UP   , KC_ENT  , KC_SPC  , TT(_L)  , KC_MUTE
+  KC_LEAD , KC_Z    , KC_X    , KC_C    , KC_V    , KC_B    , OSL(_0) , KC_LEFT , KC_RGHT , OSL(_1) , KC_N    , KC_M    , KC_COMM , KC_DOT  , KC_SLSH , KC_BSLS ,
+                                KC_NO   , TT(_R)  , KC_BSPC , KC_ESC  , KC_DOWN , KC_UP   , KC_ENT  , KC_SPC  , TT(_L)  , KC_MUTE
 ),
 [_L] = LAYOUT(
   _______ , KC_1    , KC_2    , KC_3    , KC_4    , KC_5    ,                                         KC_6    , KC_7    , KC_8    , KC_9    , KC_0    , KC_EQL  ,
@@ -46,6 +54,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______ , _______ , _______ , _______ , _______ , _______ , _______ , KC_MPRV , KC_MNXT , _______ , _______ , _______ , _______ , _______ , _______ , _______ ,
                                 _______ , _______ , _______ , _______ , KC_MPLY , KC_MSTP , _______ , _______ , _______ , _______
 ),
+[_1] = LAYOUT(
+  _______ , _______ , _______ , EURO    , _______ , _______ ,                                         _______ , UM_UE   , _______ , UM_OE   , _______ , _______ ,
+  _______ , UM_AE   , UM_SS   , _______ , _______ , KC_LSFT ,                                         KC_RSFT , _______ , _______ , _______ , _______ , _______ ,
+  _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ ,
+                                _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______
+),
 };
 
 /* layer_state_t layer_state_set_user(layer_state_t state) { */
@@ -53,18 +67,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* } */
 
 void encoder_update_user(uint8_t index, bool direction) {
-    if (index == 0) { // left encoder
-        if (direction) {
-            tap_code(KC_PGUP);
-        } else {
-            tap_code(KC_PGDN);
-        }
+  if (index == 0) { // left encoder
+    if (direction) {
+      tap_code(KC_PGUP);
+    } else {
+      tap_code(KC_PGDN);
     }
-    else if (index == 1) { // right encoder
-        if (direction) {
-            tap_code(KC_VOLD);
-        } else {
-            tap_code(KC_VOLU);
-        }
+  }
+  else if (index == 1) { // right encoder
+    if (direction) {
+      tap_code(KC_VOLD);
+    } else {
+      tap_code(KC_VOLU);
     }
+  }
 }
