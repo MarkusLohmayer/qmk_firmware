@@ -82,3 +82,41 @@ void encoder_update_user(uint8_t index, bool direction) {
     }
   }
 }
+
+LEADER_EXTERNS();
+
+void matrix_scan_user(void) {
+  LEADER_DICTIONARY() {
+    leading = false;
+    leader_end();
+
+    SEQ_TWO_KEYS(KC_M, KC_L) {
+      SEND_STRING("Markus Lohmayer");
+    }
+
+    SEQ_FOUR_KEYS(KC_C, KC_F, KC_A, KC_U) {
+      SEND_STRING("markus.lohmayer@fau.de");
+    }
+
+    SEQ_THREE_KEYS(KC_C, KC_M, KC_L) {
+      SEND_STRING("markus.lohmayer@gmail.de");
+    }
+
+    SEQ_TWO_KEYS(KC_C, KC_P) {
+      SEND_STRING("+49 157 789 187 12");
+    }
+
+    SEQ_THREE_KEYS(KC_C, KC_M, KC_B) {
+      SEND_STRING("Mirdelsberg 1\n84405 Dorfen\nGermany");
+    }
+
+    SEQ_THREE_KEYS(KC_MINS, KC_V, KC_G) {
+      SEND_STRING("Viele Gr" SS_RALT("y") SS_RALT("s") "e,\nMarkus Lohmayer\n");
+    }
+
+    SEQ_THREE_KEYS(KC_MINS, KC_S, KC_G) {
+      SEND_STRING("Sch" SS_RALT("p") "ne Gr" SS_RALT("y") SS_RALT("s") "e,\nMarkus Lohmayer\n");
+    }
+
+  }
+}
