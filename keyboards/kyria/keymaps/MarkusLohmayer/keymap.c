@@ -8,6 +8,18 @@ enum layers {
   _1
 };
 
+typedef enum {
+  PGUPDN = 0,
+  SECTIONS,
+  MARKS,
+  SPELL,
+  JUMPS,
+  CHANGES,
+  HUNKS
+} encoder_function_t;
+
+encoder_function_t encoder_function = PGUPDN;
+
 /* homerow mod */
 #define _L_TAB   LT(_L, KC_TAB)
 #define GUI_A    LGUI_T(KC_A)
@@ -65,21 +77,68 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 void encoder_update_user(uint8_t index, bool clockwise) {
   if (index == 0) { // left encoder
-    switch (get_highest_layer(layer_state)) {
-      case _L:
+    switch (encoder_function) {
+      case PGUPDN:
+        if (clockwise) {
+          tap_code(KC_PGDN);
+        } else {
+          tap_code(KC_PGUP);
+        }
+        break;
+      case SECTIONS:
+        if (clockwise) {
+          tap_code(KC_RBRC);
+          tap_code(KC_RBRC);
+        } else {
+          tap_code(KC_LBRC);
+          tap_code(KC_LBRC);
+        }
+        break;
+      case MARKS:
+        if (clockwise) {
+          tap_code(KC_RBRC);
+          tap_code(KC_GRAVE);
+        } else {
+          tap_code(KC_LBRC);
+          tap_code(KC_GRAVE);
+        }
+        break;
+      case SPELL:
+        if (clockwise) {
+          tap_code(KC_RBRC);
+          tap_code(KC_S);
+        } else {
+          tap_code(KC_LBRC);
+          tap_code(KC_S);
+        }
+        break;
+      case JUMPS:
+        if (clockwise) {
+          register_code(KC_LCTL);
+          tap_code(KC_I);
+          unregister_code(KC_LCTL);
+        } else {
+          register_code(KC_LCTL);
+          tap_code(KC_O);
+          unregister_code(KC_LCTL);
+        }
+        break;
+      case CHANGES:
+        if (clockwise) {
+          tap_code(KC_G);
+          tap_code(KC_COMMA);
+        } else {
+          tap_code(KC_G);
+          tap_code(KC_SCLN);
+        }
+        break;
+      case HUNKS:
         if (clockwise) {
           tap_code(KC_RBRC);
           tap_code(KC_C);
         } else {
           tap_code(KC_LBRC);
           tap_code(KC_C);
-        }
-        break;
-      default:
-        if (clockwise) {
-          tap_code(KC_PGDN);
-        } else {
-          tap_code(KC_PGUP);
         }
         break;
     }
@@ -99,6 +158,34 @@ void matrix_scan_user(void) {
   LEADER_DICTIONARY() {
     leading = false;
     leader_end();
+
+    SEQ_TWO_KEYS(KC_E, KC_P) {
+      encoder_function = PGUPDN;
+    }
+
+    SEQ_TWO_KEYS(KC_E, KC_DOT) {
+      encoder_function = SECTIONS;
+    }
+
+    SEQ_TWO_KEYS(KC_E, KC_M) {
+      encoder_function = MARKS;
+    }
+
+    SEQ_TWO_KEYS(KC_E, KC_S) {
+      encoder_function = SPELL;
+    }
+
+    SEQ_TWO_KEYS(KC_E, KC_J) {
+      encoder_function = JUMPS;
+    }
+
+    SEQ_TWO_KEYS(KC_E, KC_C) {
+      encoder_function = CHANGES;
+    }
+
+    SEQ_TWO_KEYS(KC_E, KC_H) {
+      encoder_function = HUNKS;
+    }
 
     SEQ_TWO_KEYS(KC_M, KC_L) {
       SEND_STRING("Markus Lohmayer");
