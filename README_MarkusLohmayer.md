@@ -3,9 +3,20 @@
 ## Installation
 
 macOS:
+
 ```
 brew install qmk/qmk/qmk
 ```
+
+Ubuntu:
+
+```
+sudo apt install -y git python3-pip gcc-avr
+python3 -m pip install --user qmk
+```
+
+
+## Setup
 
 ```
 qmk setup -H ~/git/MarkusLohmayer/qmk_firmware MarkusLohmayer/qmk_firmware
@@ -13,6 +24,8 @@ qmk setup -H ~/git/MarkusLohmayer/qmk_firmware MarkusLohmayer/qmk_firmware
 
 
 ## Configuration
+
+Default keyboard and keymap:
 
 ```
 qmk config user.keyboard=kyria
@@ -47,4 +60,15 @@ qmk flash
 
 ```
 vi ./keyboards/kyria/keymaps/MarkusLohmayer
+```
+
+
+## Git and GitHub
+
+Pull latest state from upstream:
+
+```
+git fetch upstream
+git rebase upstream/master
+make git-submodule
 ```

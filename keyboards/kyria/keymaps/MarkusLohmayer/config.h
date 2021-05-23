@@ -8,6 +8,8 @@
 #define TAPPING_FORCE_HOLD
 #define PERMISSIVE_HOLD
 
+/* encoder */
+#define ENCODER_DIRECTION_FLIP
 #define ENCODER_RESOLUTION 2
 
 /* leader key */

@@ -63,23 +63,32 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 };
 
-/* layer_state_t layer_state_set_user(layer_state_t state) { */
-/*     return update_tri_layer_state(state, _L, _R, _A); */
-/* } */
-
-void encoder_update_user(uint8_t index, bool direction) {
+void encoder_update_user(uint8_t index, bool clockwise) {
   if (index == 0) { // left encoder
-    if (direction) {
-      tap_code(KC_PGUP);
-    } else {
-      tap_code(KC_PGDN);
+    switch (get_highest_layer(layer_state)) {
+      case _L:
+        if (clockwise) {
+          tap_code(KC_RBRC);
+          tap_code(KC_C);
+        } else {
+          tap_code(KC_LBRC);
+          tap_code(KC_C);
+        }
+        break;
+      default:
+        if (clockwise) {
+          tap_code(KC_PGDN);
+        } else {
+          tap_code(KC_PGUP);
+        }
+        break;
     }
   }
   else if (index == 1) { // right encoder
-    if (direction) {
-      tap_code(KC_VOLD);
-    } else {
+    if (clockwise) {
       tap_code(KC_VOLU);
+    } else {
+      tap_code(KC_VOLD);
     }
   }
 }
