@@ -8,8 +8,13 @@ enum layers {
   _1
 };
 
+enum custom_keycodes {
+  ENC1 = SAFE_RANGE,
+};
+
 typedef enum {
   PGUPDN = 0,
+  SEARCH,
   SECTIONS,
   MARKS,
   SPELL,
@@ -47,7 +52,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_GRV  , KC_Q    , KC_W    , KC_E    , KC_R    , KC_T    ,                                         KC_Y    , KC_U    , KC_I    , KC_O    , KC_P    , KC_MINS ,
   _L_TAB  , GUI_A   , ALT_S   , CTL_D   , SFT_F   , _R_G    ,                                         _R_H    , SFT_J   , CTL_K   , ALT_L   , GUI_SCLN, _L_QUOT ,
   KC_LEAD , KC_Z    , KC_X    , KC_C    , KC_V    , KC_B    , OSL(_0) , KC_LEFT , KC_RGHT , OSL(_1) , KC_N    , KC_M    , KC_COMM , KC_DOT  , KC_SLSH , KC_BSLS ,
-                                KC_NO   , TO(_L)  , KC_BSPC , KC_ESC  , KC_DOWN , KC_UP   , KC_ENT  , KC_SPC  , TO(_R)  , KC_MUTE
+                                ENC1    , TO(_L)  , KC_BSPC , KC_ESC  , KC_DOWN , KC_UP   , KC_ENT  , KC_SPC  , TO(_R)  , KC_MUTE
 ),
 [_L] = LAYOUT(
   _______ , KC_1    , KC_2    , KC_3    , KC_4    , KC_5    ,                                         KC_6    , KC_7    , KC_8    , KC_9    , KC_0    , KC_EQL  ,
@@ -83,6 +88,15 @@ void encoder_update_user(uint8_t index, bool clockwise) {
           tap_code(KC_PGDN);
         } else {
           tap_code(KC_PGUP);
+        }
+        break;
+      case SEARCH:
+        if (clockwise) {
+          tap_code(KC_N);
+        } else {
+          register_code(KC_LSFT);
+          tap_code(KC_N);
+          unregister_code(KC_LSFT);
         }
         break;
       case SECTIONS:
@@ -152,12 +166,46 @@ void encoder_update_user(uint8_t index, bool clockwise) {
   }
 }
 
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  switch (keycode) {
+    case ENC1:
+      if (record->event.pressed) {
+        switch (encoder_function) {
+          case SEARCH:
+            register_code(KC_LSFT);
+            tap_code(KC_SCLN);
+            unregister_code(KC_LSFT);
+            tap_code(KC_N);
+            tap_code(KC_O);
+            tap_code(KC_H);
+            tap_code(KC_ENT);
+            break;
+          case HUNKS:
+            tap_code(KC_SPACE);
+            tap_code(KC_H);
+            tap_code(KC_P);
+            break;
+          default:
+            break;
+        }
+      }
+      break;
+    }
+    return true;
+};
+
 LEADER_EXTERNS();
 
 void matrix_scan_user(void) {
   LEADER_DICTIONARY() {
     leading = false;
     leader_end();
+
+    SEQ_ONE_KEY(KC_SLASH) {
+      tap_code(KC_ESC);
+      tap_code(KC_SLASH);
+      encoder_function = SEARCH;
+    }
 
     SEQ_TWO_KEYS(KC_E, KC_P) {
       encoder_function = PGUPDN;
