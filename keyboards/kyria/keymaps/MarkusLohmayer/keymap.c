@@ -265,3 +265,65 @@ void matrix_scan_user(void) {
 
   }
 }
+
+#ifdef OLED_DRIVER_ENABLE
+oled_rotation_t oled_init_user(oled_rotation_t rotation) {
+  return OLED_ROTATION_270;
+}
+
+void oled_task_user(void) {
+  switch (get_highest_layer(layer_state)) {
+    case _B:
+      oled_write_P(PSTR("BASE\n"), false);
+      break;
+    case _L:
+      oled_write_P(PSTR("L\n"), false);
+      break;
+    case _R:
+      oled_write_P(PSTR("R\n"), false);
+      break;
+    case _0:
+      oled_write_P(PSTR("F0\n"), false);
+      break;
+    case _1:
+      oled_write_P(PSTR("F1\n"), false);
+      break;
+    default:
+      oled_write_P(PSTR("error\n"), false);
+  }
+
+  switch (encoder_function) {
+    case PGUPDN:
+      oled_write_P(PSTR("EP\n"), false);
+      break;
+    case SEARCH:
+      oled_write_P(PSTR("/\n"), false);
+      break;
+    case SECTIONS:
+      oled_write_P(PSTR("E.\n"), false);
+      break;
+    case MARKS:
+      oled_write_P(PSTR("EM\n"), false);
+      break;
+    case SPELL:
+      oled_write_P(PSTR("ES\n"), false);
+      break;
+    case JUMPS:
+      oled_write_P(PSTR("EJ\n"), false);
+      break;
+    case CHANGES:
+      oled_write_P(PSTR("EC\n"), false);
+      break;
+    case HUNKS:
+      oled_write_P(PSTR("EH\n"), false);
+      break;
+    default:
+      oled_write_P(PSTR("error\n"), false);
+  }
+
+  led_t led_state = host_keyboard_led_state();
+  oled_write_P(led_state.caps_lock   ? PSTR("CAPS") : PSTR("   "), false);
+  oled_write_P(led_state.num_lock    ? PSTR("NUM") : PSTR("   "), false);
+  oled_write_P(led_state.scroll_lock ? PSTR("SCR") : PSTR("   "), false);
+}
+#endif
